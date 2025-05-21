@@ -27,7 +27,7 @@ jobs:
         run: |
           ./create-jar.sh
           # copy jar to artifacts folder
-          mkdir artifacts/ > /dev/null 2>&1 || { echo "artifacts folder exist continuing..." }
+          mkdir -p artifacts/
           mv hello-world.jar artifacts/hello-world.jar
       
       - name: Create draft PR
