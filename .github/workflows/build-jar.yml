@@ -28,7 +28,7 @@ jobs:
           ./create-jar.sh
           # copy jar to artifacts folder
           mkdir -p artifacts/
-          mv hello-world.jar artifacts/hello-world.jar
+          mv hello-world.jar artifacts/hello-world-${{ github.ref_name }}.jar
       
       - name: Create draft PR
         uses: peter-evans/create-pull-request@v6
