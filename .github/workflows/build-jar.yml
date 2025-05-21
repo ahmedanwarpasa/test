@@ -1,0 +1,56 @@
+name: Build JAR and Create Draft PR
+
+on:
+  push:
+    tags:
+      - 'v*'  # This will trigger the action when tags starting with 'v' (e.g., v1.0.0) are pushed.
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-24.04 
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install nano
+
+      - name: Build JAR
+        working-directory: docker/server
+        run: |
+          ./create-jar.sh
+
+      # - name: Create new branch
+      #   working-directory: docker/server
+      #   run: |
+      #     git config user.name "GHA-bot"
+      #     git config user.email "GHA-bot@users.noreply.github.com"
+      #     BRANCH_NAME="include-jar-${{ github.event.release.tag_name }}"
+      #     git checkout -b $BRANCH_NAME
+
+      #     # Add only the JAR file
+      #     git stage app/build/libs/onec-leshan-server-1.0.0-all.jar
+      #     git commit -m "Add built JAR for release ${{ github.event.release.tag_name }}"
+      #     git push origin $BRANCH_NAME
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create draft PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: include-jar-${{ github.event.release.tag_name }}
+          commit-message: Add built JAR for release ${{ github.event.release.tag_name }}
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          title: "Include JAR for Release ${{ github.event.release.tag_name }}"
+          body: |
+            This PR includes the built JAR file for release `${{ github.event.release.tag_name }}`.
+            Please review and merge into `main` for inclusion in the next RC or final release.
+          draft: true
