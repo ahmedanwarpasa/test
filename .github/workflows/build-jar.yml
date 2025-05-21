@@ -46,12 +46,12 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: include-jar-${{ github.event.release.tag_name }}
-          commit-message: Add built JAR for release ${{ github.event.release.tag_name }}
+          branch: include-jar-${{ github.ref_name }}
+          commit-message: Add built JAR for release ${{ github.ref_name }}
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           base: master
-          title: "Include JAR for Release ${{ github.event.release.tag_name }}"
+          title: "Include JAR for Release ${{ github.ref_name }}"
           body: |
-            This PR includes the built JAR file for release `${{ github.event.release.tag_name }}`.
+            This PR includes the built JAR file for release `${{ github.ref_name }}`.
             Please review and merge into `main` for inclusion in the next RC or final release.
           draft: true
