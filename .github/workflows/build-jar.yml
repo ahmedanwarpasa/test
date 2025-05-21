@@ -47,6 +47,6 @@ jobs:
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           add-paths: |
-            docker/server/artifacts/hello-world-${{ github.ref_name }}.jar
+            docker/server/artifacts/*
           base: master
           draft: true
