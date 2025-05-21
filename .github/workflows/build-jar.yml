@@ -27,7 +27,7 @@ jobs:
         run: |
           ./create-jar.sh
           # copy jar to artifacts folder
-          mkdir artifacts/
+          mkdir artifacts/ | echo "artifacts folder exist continuing..."
           cp hello-world.jar artifacts/
           touch second-file
           ls -la
