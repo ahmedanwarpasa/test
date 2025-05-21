@@ -28,8 +28,9 @@ jobs:
           ./create-jar.sh
           # copy jar to artifacts folder
           mkdir artifacts/ || echo "artifacts folder exist continuing..."
-          cp hello-world.jar artifacts/hello-world.jar
-
+          mv hello-world.jar artifacts/hello-world.jar
+          md5sum artifacts/hello-world.jar
+          git status
           # Configure git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -40,7 +41,7 @@ jobs:
           # Create new branch
           BRANCH_NAME="${{ github.ref_name }}-IoT-Server-JAR"
           git checkout -b $BRANCH_NAME
-
+          md5sum artifacts/hello-world.jar
           git commit -m "Update IoT Server JAR from ${{ github.ref_name }}"
 
           # Push new branch
