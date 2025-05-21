@@ -49,6 +49,7 @@ jobs:
           branch: include-jar-${{ github.event.release.tag_name }}
           commit-message: Add built JAR for release ${{ github.event.release.tag_name }}
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          base: master
           title: "Include JAR for Release ${{ github.event.release.tag_name }}"
           body: |
             This PR includes the built JAR file for release `${{ github.event.release.tag_name }}`.
