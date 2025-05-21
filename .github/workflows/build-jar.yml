@@ -28,6 +28,11 @@ jobs:
           ./create-jar.sh
           # copy jar to artifacts folder
           mkdir -p artifacts/
+
+          # remove old jar
+          rm artifacts/hello-world*
+
+          # copy latest jar
           mv hello-world.jar artifacts/hello-world-${{ github.ref_name }}.jar
       
       - name: Create draft PR
@@ -42,6 +47,6 @@ jobs:
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           add-paths: |
-            docker/server/artifacts/hello-world.jar
+            docker/server/artifacts/hello-world-${{ github.ref_name }}.jar
           base: master
           draft: true
