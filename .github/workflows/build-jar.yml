@@ -39,7 +39,7 @@ jobs:
           branch: ${{ github.ref_name }}-IoT-Server-JAR
           commit-message: Update IoT Server JAR from ${{ github.ref_name }}
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
-          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           add-paths: |
             docker/server/artifacts/hello-world.jar
           base: master
