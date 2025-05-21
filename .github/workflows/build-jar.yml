@@ -27,36 +27,21 @@ jobs:
         run: |
           ./create-jar.sh
           # copy jar to artifacts folder
-          mkdir artifacts/ || echo "artifacts folder exist continuing..."
+          mkdir artifacts/ > /dev/null 2>&1 || { echo "artifacts folder exist continuing..." }
           mv hello-world.jar artifacts/hello-world.jar
-          md5sum artifacts/hello-world.jar
-          git status
-          # Configure git
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # stage the JAR file before checking out new branch
-          git stage artifacts/hello-world.jar
-          
-          # Create new branch
-          BRANCH_NAME="${{ github.ref_name }}-IoT-Server-JAR"
-          git checkout -b $BRANCH_NAME
-          md5sum artifacts/hello-world.jar
-          git commit -m "Update IoT Server JAR from ${{ github.ref_name }}"
-
-          # Push new branch
-          git push origin $BRANCH_NAME
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create draft PR
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}-IoT-Server-JAR
-          base: master
-          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           title: "Include JAR for Release ${{ github.ref_name }}"
           body: |
             This PR includes the built IoT Server JAR file from release `${{ github.ref_name }}`.
+          commit-message: Update IoT Server JAR from ${{ github.ref_name }}
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          add-paths: |
+            docker/server/artifacts/hello-world.jar
+          base: master
           draft: true
