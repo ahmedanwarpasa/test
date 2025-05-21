@@ -1,4 +1,4 @@
-name: oc-iot-client/build-jar
+name: build-jar
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           sudo apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install nano
 
-      - name: Build IoT Server JAR
+      - name: Build
         working-directory: docker/server
         run: |
           # Build JAR
@@ -34,10 +34,10 @@ jobs:
           # update latest jar
           mv hello-world.jar jar/hello-world-${{ github.ref_name }}.jar
 
-      - name: Run IoT Server
+      - name: Run
         working-directory: docker/server/jar
         run: |
-          sleep 60
+          sleep 10
 
       - name: Create Draft Pull Request
         uses: peter-evans/create-pull-request@v6
