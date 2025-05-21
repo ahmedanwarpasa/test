@@ -1,9 +1,9 @@
-name: Build JAR and Create Draft PR
+name: oc-iot-client/build-jar
 
 on:
   push:
     tags:
-      - 'v*'  # This will trigger the action when tags starting with 'v' (e.g., v1.0.0) are pushed.
+      - 'v*'
 
 jobs:
   build-and-pr:
@@ -22,31 +22,35 @@ jobs:
           sudo apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install nano
 
-      - name: Build JAR and Push new Branch
+      - name: Build IoT Server JAR
         working-directory: docker/server
         run: |
+          # Build JAR
           ./create-jar.sh
-          # copy jar to artifacts folder
-          mkdir -p artifacts/
 
           # remove old jar
-          rm artifacts/hello-world*
+          rm jar/hello-world*
 
-          # copy latest jar
-          mv hello-world.jar artifacts/hello-world-${{ github.ref_name }}.jar
-      
-      - name: Create draft PR
+          # update latest jar
+          mv hello-world.jar jar/hello-world-${{ github.ref_name }}.jar
+
+      - name: Run IoT Server
+        working-directory: docker/server/jar
+        run: |
+          sleep 60
+
+      - name: Create Draft Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}-IoT-Server-JAR
-          title: "Include JAR for Release ${{ github.ref_name }}"
+          title: "Update IoT Server JAR from Release ${{ github.ref_name }}"
           body: |
             This PR includes the built IoT Server JAR file from release `${{ github.ref_name }}`.
           commit-message: Update IoT Server JAR from ${{ github.ref_name }}
           committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
           add-paths: |
-            docker/server/artifacts/*
+            docker/server/jar/*
           base: master
           draft: true
