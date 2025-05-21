@@ -40,7 +40,7 @@ jobs:
           git checkout -b $BRANCH_NAME
 
           # Add only the JAR file
-          git stage docker/server/artifacts/hello-world.jar
+          git stage artifacts/hello-world.jar
           git commit -m "Update IoT Server JAR from ${{ github.ref_name }}"
           git push origin $BRANCH_NAME
         env:
