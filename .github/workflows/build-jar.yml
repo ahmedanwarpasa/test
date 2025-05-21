@@ -26,32 +26,23 @@ jobs:
         working-directory: docker/server
         run: |
           ./create-jar.sh
-
-      # - name: Create new branch
-      #   working-directory: docker/server
-      #   run: |
-      #     git config user.name "GHA-bot"
-      #     git config user.email "GHA-bot@users.noreply.github.com"
-      #     BRANCH_NAME="include-jar-${{ github.event.release.tag_name }}"
-      #     git checkout -b $BRANCH_NAME
-
-      #     # Add only the JAR file
-      #     git stage app/build/libs/onec-leshan-server-1.0.0-all.jar
-      #     git commit -m "Add built JAR for release ${{ github.event.release.tag_name }}"
-      #     git push origin $BRANCH_NAME
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # copy jar to artifacts folder
+          mkdir artifacts/
+          cp hello-world.jar artifacts/
+          touch second-file
+          ls -la
 
       - name: Create draft PR
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: include-jar-${{ github.ref_name }}
-          commit-message: Add built JAR for release ${{ github.ref_name }}
-          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: ${{ github.ref_name }}-IoT-Server-JAR
+          commit-message: Update IoT Server JAR from ${{ github.ref_name }}
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          add-paths: |
+            docker/server/artifacts/hello-world.jar
           base: master
           title: "Include JAR for Release ${{ github.ref_name }}"
           body: |
-            This PR includes the built JAR file for release `${{ github.ref_name }}`.
-            Please review and merge into `main` for inclusion in the next RC or final release.
+            This PR includes the built IoT Server JAR file for release `${{ github.ref_name }}`.
           draft: true
