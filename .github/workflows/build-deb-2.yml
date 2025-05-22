@@ -1,0 +1,59 @@
+name: build-jar
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-24.04 
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install nano
+
+      - name: Build
+        working-directory: docker/client
+        run: |
+          # Build deb
+          ./create-deb-2.sh
+
+          # remove old dab
+          rm debs/*_2.deb || echo "debian file not Found, continuing..."
+
+          # update latest deb
+          mv client-deb-dev_2.deb debs/
+          mv client-deb-core_2.deb debs/
+
+      - name: Run
+        working-directory: docker/server/client
+        run: |
+          sleep 10
+
+      - name: Create Draft Pull Request
+        if: startsWith(github.ref, 'refs/tags/v') # This will run the step only if tag is the trigger
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Uses action token
+          branch: ${{ github.ref_name }}-debs-2
+          title: "Update IoT Client [2] debian packages from Release ${{ github.ref_name }}"
+          body: |
+            This PR includes the built IoT Client deb 2 file from release `${{ github.ref_name }}`.
+          commit-message: Update IoT Client 2 debian packages from ${{ github.ref_name }}
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          add-paths: |
+            docker/client/debs/*_2.deb 
+          base: master
+          draft: true
+
