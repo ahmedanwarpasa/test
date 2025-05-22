@@ -36,7 +36,7 @@ jobs:
           mv client-deb-core_2.deb debs/
 
       - name: Run
-        working-directory: docker/server/client
+        working-directory: docker/client
         run: |
           sleep 10
 
