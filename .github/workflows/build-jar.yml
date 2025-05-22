@@ -29,7 +29,7 @@ jobs:
           ./create-jar.sh
 
           # remove old jar
-          rm jar/hello-world* || echo "Jar not Found, continuing..."
+          rm jar/hello-world* || echo "Jar folder not Found, continuing..."
 
           # update latest jar
           mv hello-world.jar jar/hello-world-${{ github.ref_name }}.jar
