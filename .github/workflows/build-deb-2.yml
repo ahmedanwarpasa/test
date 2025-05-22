@@ -1,4 +1,4 @@
-name: build-jar
+name: build-deb-2
 
 on:
   push:
